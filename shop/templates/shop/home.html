@@ -1,0 +1,62 @@
+{% extends 'shop/base.html' %}
+{% block title %}ShopEase — Everyday essentials{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">A BETTER WAY TO SHOP</span>
+    <h1>Good finds.<br><span>Great everyday prices.</span></h1>
+    <p>Discover useful everyday essentials, explore the collection, and enjoy a simple, smooth checkout.</p>
+    <a class="btn hero-cta" href="#products">Explore products <span aria-hidden="true">→</span></a>
+    <div class="hero-note"><span class="hero-note-icon">✓</span> Simple shopping, from browse to checkout</div>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="art-circle"></div>
+    <div class="art-card art-card-back"><span>YOUR DAILY</span><strong>ESSENTIALS</strong></div>
+    <div class="art-card art-card-front"><span class="art-spark">✦</span><span>THE GOOD STUFF</span><strong>Find your<br>new favorite.</strong><span class="art-pill">SHOP THE COLLECTION ↗</span></div>
+    <span class="float-dot dot-one"></span><span class="float-dot dot-two"></span><span class="float-star">✳</span>
+  </div>
+</section>
+<section class="benefits" aria-label="Shop benefits">
+  <div><span class="benefit-icon">◇</span><span><strong>Easy to explore</strong><small>Find products quickly</small></span></div>
+  <div><span class="benefit-icon">♡</span><span><strong>Everyday essentials</strong><small>Thoughtful picks for you</small></span></div>
+  <div><span class="benefit-icon">✓</span><span><strong>Smooth checkout</strong><small>Simple ordering experience</small></span></div>
+</section>
+<section class="products-section" id="products">
+  <div class="section-heading">
+    <div><span class="section-kicker">THE COLLECTION</span><h2>Find something you’ll love</h2><p>Browse the latest items in our store.</p></div>
+    <span class="result-count">{{ products|length }} item{{ products|length|pluralize }}</span>
+  </div>
+  <section class="toolbar">
+    <form method="get">
+      <label class="search-box"><span aria-hidden="true">⌕</span><input name="q" value="{{ q|default:'' }}" placeholder="Search products..." aria-label="Search products"></label>
+      <select name="category" aria-label="Filter by category">
+        <option value="">All categories</option>
+        {% for c in categories %}<option value="{{ c }}" {% if category == c %}selected{% endif %}>{{ c }}</option>{% endfor %}
+      </select>
+      <button type="submit">Search <span aria-hidden="true">→</span></button>
+      {% if q or category %}<a class="clear-filter" href="{% url 'home' %}">Clear</a>{% endif %}
+    </form>
+  </section>
+  <section class="grid">
+    {% for p in products %}
+    <article class="card">
+      <a class="product-image" href="{% url 'product_detail' p.id %}" aria-label="View {{ p.name }}">
+        {% if p.image_url %}<img src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy" onerror="this.style.display='none'">{% else %}<span class="image-placeholder" aria-hidden="true">✳</span>{% endif %}
+        <span class="image-label">{{ p.category }}</span>
+      </a>
+      <div class="card-body">
+        <span class="tag">{{ p.category }}</span><h3><a href="{% url 'product_detail' p.id %}">{{ p.name }}</a></h3>
+        <p class="product-description">{{ p.description|truncatechars:90 }}</p>
+        <div class="product-bottom"><div><strong class="product-price">₹{{ p.price }}</strong><span class="stock-note">{% if p.stock > 0 %}{{ p.stock }} in stock{% else %}Currently unavailable{% endif %}</span></div></div>
+        <div class="actions">
+          <a class="btn secondary" href="{% url 'product_detail' p.id %}">View details</a>
+          {% if p.stock > 0 %}<a class="btn" href="{% url 'add_to_cart' p.id %}">Add to cart <span aria-hidden="true">+</span></a>{% else %}<span class="btn disabled">Out of stock</span>{% endif %}
+        </div>
+      </div>
+    </article>
+    {% empty %}
+    <div class="empty"><span class="empty-icon">⌕</span><h2>No products found</h2><p>Try another search term or choose a different category.</p><a class="btn" href="{% url 'home' %}">View all products</a></div>
+    {% endfor %}
+  </section>
+</section>
+{% endblock %}

@@ -1,0 +1,1 @@
+{% extends 'shop/base.html' %}{% block title %}Register — ShopEase{% endblock %}{% block content %}<div class="auth"><h1>Create account</h1><p>Register to place and track orders.</p><form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn full">Create Account</button></form><p>Already registered? <a href="{% url 'login' %}">Login</a></p></div>{% endblock %}
